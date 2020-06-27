@@ -2,6 +2,23 @@
 
 require './app/frame'
 
+RSpec.shared_examples 'false booleans' do
+  it do
+    %w[spare? strike?].each do |method|
+      expect(frame.public_send(method)).to eq false
+    end
+  end
+end
+
+RSpec.shared_examples 'mixed booleans' do |param|
+  let(:boolean) { param }
+  it do
+    [['spare?', boolean], ['strike?', !boolean]].each do |val|
+      expect(frame.public_send(val.first)).to eq val.last
+    end
+  end
+end
+
 RSpec.describe Frame, '#variables' do
   let(:frame) { Frame.new(5) }
 
@@ -33,49 +50,25 @@ RSpec.describe Frame, '#variables' do
     context 'when hit1 is not 10' do
       before { frame.hit1 = 5 }
 
-      it 'spare should be' do
-        expect(frame.spare?).to eq false
-      end
-
-      it 'strike should be' do
-        expect(frame.strike?).to eq false
-      end
+      it_behaves_like 'false booleans'
 
       context 'and hit1 + hit2 does not sum 10' do
         before { frame.hit2 = 1 }
 
-        it 'spare should be' do
-          expect(frame.spare?).to eq false
-        end
-
-        it 'strike should be' do
-          expect(frame.strike?).to eq false
-        end
+        it_behaves_like 'false booleans'
       end
 
       context 'and hit1 + hit2 sum 10' do
         before { frame.hit2 = 5 }
 
-        it 'spare should be' do
-          expect(frame.spare?).to eq true
-        end
-
-        it 'strike should be' do
-          expect(frame.strike?).to eq false
-        end
+        include_examples 'mixed booleans', true
       end
     end
 
     context 'when hit1 is 10' do
       before { frame.hit1 = 10 }
 
-      it 'spare should be' do
-        expect(frame.spare?).to eq false
-      end
-
-      it 'strike should be' do
-        expect(frame.strike?).to eq true
-      end
+      include_examples 'mixed booleans', false
     end
   end
 end

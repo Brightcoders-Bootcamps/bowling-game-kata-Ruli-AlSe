@@ -30,3 +30,6 @@ Style/SlicingWithRange:
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*.rb'
+
+Metrics/AbcSize:
+ Max: 17
