@@ -9,12 +9,12 @@ class BowlingBoard
 
   def initialize
     @table = 10.times.map { |position| Frame.new(position) }
-    @scores = []
   end
 
-  def record_results(position, hit1, hit2)
-    table[position].hit1 = hit1
-    table[position].hit2 = hit2
+  def record_results(position, score, pts)
+    frame = table[position]
+    frame.hit1 = score
+    frame.hit2 = pts
   end
 
   def record_extra_ball(hit)
@@ -35,21 +35,24 @@ class BowlingBoard
   def score_for_valid_position(frame, position)
     return unless position < 9
 
-    frame.score += get_bonus(position + 1, true) if frame.strike?
-    frame.score += get_bonus(position + 1) if frame.spare?
+    next_position = position + 1
+    frame.score += get_bonus(next_position, true) if frame.strike?
+    frame.score += get_bonus(next_position) if frame.spare?
   end
 
   def get_bonus(position, strike = false)
     calculate_if_extra_ball(strike, position, table.last)
     frame = table[position]
-    return frame.hit1 unless strike
+    hit_val = frame.hit1
+    return hit_val unless strike
 
-    frame.strike? ? frame.hit1 + get_bonus(position + 1) : frame.score
+    frame.strike? ? hit_val + get_bonus(position + 1) : frame.score
   end
 
   def calculate_if_extra_ball(strike, position, frame)
     return unless position == 10
 
-    strike ? frame.hit2 + frame.hit3 : frame.hit2
+    hit_val = frame.hit2
+    strike ? hit_val + frame.hit3 : hit_val
   end
 end

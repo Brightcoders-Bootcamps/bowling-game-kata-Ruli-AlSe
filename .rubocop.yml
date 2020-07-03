@@ -26,6 +26,8 @@ Style/RedundantRegexpEscape:
   Enabled: false
 Style/SlicingWithRange:
   Enabled: false
+Style/MixinUsage:
+  Enabled: false
 
 Metrics/BlockLength:
   Exclude:

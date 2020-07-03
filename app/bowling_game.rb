@@ -1,24 +1,8 @@
 # frozen_string_literal: true
 
 require './app/bowling_board'
-
-def print_table_score(bowling_table)
-  first_frame_section = second_frame_section = '|'
-  line = ''
-
-  bowling_table.each do |frame|
-    first_frame_section += " #{frame.strike? ? 'X' : frame.hit1}| #{frame.spare? ? '/' : frame.hit2}\t|"
-    first_frame_section += " #{frame.hit3 == 10 ? 'X' : frame.hit3} |" if frame.position == 9
-    second_frame_section += "   #{frame.score}\t|"
-    line += '---------'
-  end
-
-  puts first_frame_section, line, second_frame_section, line
-end
-
-def third_roll?(frame)
-  frame.position == 9 && (frame.strike? || frame.spare?)
-end
+require './app/game_helper.rb'
+include GameHelper
 
 puts 'Begining the game'
 bowling_game = BowlingBoard.new
@@ -40,7 +24,7 @@ ball3 = 0
 
   bowling_game.record_results(roll, ball1, ball2)
 
-  next unless third_roll?(bowling_game.table[roll])
+  next unless GameHelper.third_roll?(bowling_game.table[roll])
 
   ball3 = rand(0..10)
   puts "rolliing third ball... you knock down #{ball3} pins\n\n"
@@ -49,4 +33,4 @@ end
 
 bowling_game.calculate_totals
 
-print_table_score(bowling_game.table)
+GameHelper.print_table_score(bowling_game.table)
